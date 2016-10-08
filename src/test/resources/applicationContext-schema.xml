@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd" default-lazy-init="false">
+	<bean id="waiter" class="com.spring.aop.NativeWaiter"></bean>
+	
+	<bean id="adviceMethods" class="com.spring.aop.aspectJ.AdviceMethods"></bean>
+	
+	<!-- 可以定义多个切面 -->
+	<aop:config proxy-target-class="true">
+	<!-- 用于定义切面，内部可以定义多个增强 -->
+	<aop:aspect ref="adviceMethods">
+	<aop:before method="preGreeting" pointcut="target(com.spring.aop.NativeWaiter)andexecution(* greetTo(..))"/>
+	</aop:aspect>
+	
+	</aop:config>
+	<!-- 如果在config内定义pointcut，advisor，必须保证先后顺序pointcut，advisor，aspect -->
+	
+	<bean id="seller" class="com.spring.aop.SmartSeller"></bean>
+	
+	<aop:config proxy-target-class="true">
+	<aop:aspect ref="adviceMethods">
+	<aop:after-returning method="afterSeller" pointcut="target(com.spring.aop.SmartSeller)" returning="count" />
+	</aop:aspect>
+	</aop:config>
+	
+	<aop:config>
+	<aop:advisor advice-ref="advice" pointcut="target(com.spring.aop.Seller)"/>
+	</aop:config>
+	
+	<bean id="advice" class="com.spring.aop.GreetingBeforeAdvice"></bean>
+	<bean id="target" class="com.spring.aop.Seller"></bean>
+</beans>

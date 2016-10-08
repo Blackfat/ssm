@@ -1,0 +1,20 @@
+<?xml  version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 接口所在的目录 -->
+<mapper namespace="com.framework.persistent.mybatis.dao.UserMapper">
+   <resultMap type="User" id="user_resultMap">
+   <id property="id" column="id"/>
+   <result property="username" column="username"/>
+   <result property="loginName" column="login_name"/>
+   <result property="registDate" column="regist_date" jdbcType="TIMESTAMP" javaType="Date"/>
+   </resultMap>
+
+   <select id="findUserByLoginName" parameterType="string" resultMap="user_resultMap">
+   select * from sys_user u where u.login_name=#{name}
+   </select>
+
+
+
+
+
+</mapper>
